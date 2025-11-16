@@ -1,0 +1,9 @@
+# Install Postfix
+sudo apt-get update
+sudo apt-get install postfix mailutils
+
+# Choose "Internet Site" during setup
+# Set your domain name when prompted
+
+# Test it
+echo "Test email" | mail -s "Test from Postfix" your-email@gmail.com

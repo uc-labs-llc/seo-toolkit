@@ -1,0 +1,21 @@
+# Edit Postfix configuration
+sudo nano /etc/postfix/main.cf
+
+# Add these lines:
+relayhost = [smtp.gmail.com]:587
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+smtp_use_tls = yes
+
+# Create SASL password file
+sudo nano /etc/postfix/sasl_passwd
+# Add: [smtp.gmail.com]:587 your-email@gmail.com:your-app-password
+
+# Secure the file
+sudo chmod 600 /etc/postfix/sasl_passwd
+sudo postmap /etc/postfix/sasl_passwd
+
+# Restart Postfix
+sudo systemctl restart postfix
