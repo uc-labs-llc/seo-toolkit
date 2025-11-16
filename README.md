@@ -1,7 +1,8 @@
 
 The Complete SEO Toolkit
 
-📈 Take Control of Your SEO and Get an A= Rating
+📈 Take Control of Your SEO and Get an A+ Rating
+
 Welcome to the seo-toolkit! This open-source project provides two essential Python tools to help you take full control of your website's Search Engine Optimization (SEO) without spending thousands of dollars on expensive online services.
 
 By combining the structural integrity provided by the HTML Generator and the critical feedback from the SEO Checker, and pairing this with the free, powerful data from Google Analytics and Google Search Console, you have a complete, self-managed toolkit to ensure your website is perfectly optimized. You will be able to achieve an A= rating on foundational SEO quality by following the best practices enforced by these tools.
