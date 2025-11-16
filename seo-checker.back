@@ -4,8 +4,6 @@ import json
 import os 
 import sys 
 from datetime import datetime
-# --- NEW IMPORT FOR PDF GENERATION ---
-from fpdf import FPDF # Requires: pip install fpdf2
 
 # --- CONFIGURATION CONSTANTS FOR QUALITY ANALYSIS ---
 MAX_TITLE_CHARS = 60    # Recommended maximum character length for Google Title
@@ -444,79 +442,24 @@ def generate_remediation_report(results, quality_checks):
 # 3. CONTENT SOURCE WRAPPERS (With robust headers for URL fetch)
 # ----------------------------------------------------------------------
 
-def save_report_to_pdf(report_content, filename):
-    """Saves the report content to a PDF file using FPDF."""
-    pdf = FPDF()
-    pdf.set_auto_page_break(True, margin=15)
-    pdf.add_page()
-    pdf.set_font("Arial", size=10)
-    
-    try:
-        # FPDF requires a non-monospaced font to handle common characters, 
-        # but we need to ensure line breaks are handled correctly.
-        # We'll use multi_cell for automatic wrapping.
-        
-        # Replace the HTML code blocks marker with something PDF-friendly
-        # Or, just let it print as text, which is simpler for FPDF
-        
-        # Prepare content: strip down formatting that won't transfer (like **)
-        cleaned_content = report_content.replace('**', '')
-        
-        # Use MultiCell to handle automatic line wrapping and page breaks
-        pdf.multi_cell(w=0, h=5, txt=cleaned_content.encode('latin-1', 'replace').decode('latin-1'))
-        
-        pdf.output(filename)
-        print(f"✅ Results successfully saved to PDF: {filename}")
-        return True
-    except Exception as e:
-        print(f"❌ ERROR: Could not save file as PDF. Check installation of fpdf2. ({e})")
-        return False
-
 def save_results_to_file(report_content, source_name):
-    """Asks the user to save the report and handles file I/O for TXT or PDF."""
+    """Asks the user to save the report and handles file I/O."""
+    save_choice = input("\nDo you want to save the audit results to a file? (y/n): ").strip().lower()
     
-    # Clean the source name to create a default filename base
-    clean_name = os.path.basename(source_name).split('.')[0].replace('https://', '').replace('http://', '').strip('/')
-    clean_name = clean_name if clean_name else "website"
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    
-    while True:
-        print("\nChoose save format:")
-        print("1. Text File (.txt)")
-        print("2. PDF Document (.pdf)")
-        print("3. Don't save")
-        save_choice = input("Enter your choice (1, 2, or 3): ").strip()
+    if save_choice == 'y':
+        # Clean the source name to create a default filename
+        clean_name = os.path.basename(source_name).split('.')[0].replace('https://', '').replace('http://', '').strip('/')
+        clean_name = clean_name if clean_name else "website"
+        default_filename = f"{clean_name}_audit_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
         
-        if save_choice == '1':
-            default_filename = f"{clean_name}_audit_report_{timestamp}.txt"
-            filename = input(f"Enter filename (default: {default_filename}): ").strip() or default_filename
-            try:
-                with open(filename, 'w', encoding='utf-8') as f:
-                    f.write(report_content)
-                print(f"✅ Results successfully saved to: {filename}")
-            except Exception as e:
-                print(f"❌ ERROR: Could not save file. Check permissions or the path provided. ({e})")
-            break
-            
-        elif save_choice == '2':
-            default_filename = f"{clean_name}_audit_report_{timestamp}.pdf"
-            filename = input(f"Enter PDF filename (default: {default_filename}): ").strip() or default_filename
-            # Ensure the filename ends with .pdf
-            if not filename.lower().endswith('.pdf'):
-                filename += '.pdf'
-                
-            if save_report_to_pdf(report_content, filename):
-                break # Exit loop on successful PDF save
-            else:
-                break # Exit loop on failed PDF save
+        filename = input(f"Enter filename (default: {default_filename}): ").strip() or default_filename
         
-        elif save_choice == '3':
-            print("Report not saved.")
-            break
-            
-        else:
-            print("Invalid choice. Please enter 1, 2, or 3.")
-
+        try:
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.write(report_content)
+            print(f"✅ Results successfully saved to: {filename}")
+        except Exception as e:
+            print(f"❌ ERROR: Could not save file. Check permissions or the path provided. ({e})")
         
 def run_audit_from_url(url):
     """
