@@ -8,7 +8,8 @@ Welcome to the seo-toolkit! This open-source project provides two essential Pyth
 By combining the structural integrity provided by the HTML Generator and the critical feedback from the SEO Checker, and pairing this with the free, powerful data from Google Analytics and Google Search Console, you have a complete, self-managed toolkit to ensure your website is perfectly optimized. You will be able to achieve an A= rating on foundational SEO quality by following the best practices enforced by these tools.
 
 🌟 Key Features
-The toolkit is comprised of two distinct, powerful Python applications:
+
+The toolkit is comprised of three distinct, powerful Python applications:
 
 1. seo-html-generator.py (The Builder)
 
@@ -33,6 +34,12 @@ Structured Data Verification: Validates the presence of Schema Markup for types 
 Comprehensive Tag Audit: Scans for a wide range of essential tags, including those related to PWA, Icons, and performance-boosting relations like preload and dns-prefetch.
 
 Remediation Report: Generates a detailed report outlining all issues and suggestions for fixing them.
+
+3. sitemap-generator.py (The Sitemap XML Generator)
+
+The Local File Sitemap XML Generator is a Python desktop application built using Tkinter. Its purpose is to scan a local directory of website files (HTML, CSS, JS, etc.) and automatically generate a standards-compliant sitemap.xml file.
+
+Unlike traditional web crawlers, this tool does not connect to the internet or crawl a live website. It simply reads your local file system, determines the relative paths, and combines them with a user-provided base URL to construct the final sitemap links.
 
 💻 Installation
 
@@ -84,11 +91,13 @@ For a live website: Enter 2, then provide the full URL (e.g., https://www.exampl
 The script will perform a comprehensive audit and save a detailed remediation report to a file in the same directory, guiding you through any required fixes.
 
 🌐 The Complete SEO Toolkit: Go Pro (For Free)
+
 To truly master your SEO and consistently achieve top search rankings, combine the technical foundation provided by this toolkit with the industry-standard analysis tools from Google.
 
 This combination allows you to understand what to fix (from the seo-checker report), how to build it (with the seo-html-generator), and how it is performing in the real world (via Google's platforms).
 
 1. Google Search Console
+
 Purpose: This is your primary tool for monitoring your site's presence in Google Search results.
 
 Submitting Your Content: Ensures Google can find, crawl, and index your pages.
@@ -100,6 +109,7 @@ Troubleshooting: Receive alerts for indexing issues, mobile usability problems, 
 🔗 Access Google Search Console here: https://search.google.com/search-console/about
 
 2. Google Analytics
+
 Purpose: This tool helps you understand user behavior after they click through from the search results to your site.
 
 Behavior Analysis: See how long users stay, which pages they visit, and where they exit.
@@ -109,3 +119,105 @@ Conversion Tracking: Measure the impact of your SEO work on your business goals 
 Audience Insights: Understand the demographics and technology used by your organic search visitors.
 
 🔗 Access Google Analytics here: https://marketingplatform.google.com/about/analytics/
+
+
+Local File Sitemap XML Generator
+
+🌐 Overview
+
+The Local File Sitemap XML Generator is a Python desktop application built using Tkinter. Its purpose is to scan a local directory of website files (HTML, CSS, JS, etc.) and automatically generate a standards-compliant sitemap.xml file.
+
+Unlike traditional web crawlers, this tool does not connect to the internet or crawl a live website. It simply reads your local file system, determines the relative paths, and combines them with a user-provided base URL to construct the final sitemap links.
+
+✨ Features
+
+Local Scanning: Scans all files recursively within a selected root directory.
+
+Intelligent URL Construction: Automatically handles file paths, converting them to URL formats (using forward slashes /).
+
+Root Index Handling: Correctly maps root index files (e.g., index.html in the root folder) to the base URL (/).
+
+Custom Base URL: Allows you to define the necessary public domain prefix (e.g., https://www.example.com) for the final URLs.
+
+Sitemap Customization: Allows setting default values for priority and changefreq.
+
+Timestamp-Based lastmod: Uses the actual file modification time (os.path.getmtime) for the lastmod tag, ensuring the sitemap reflects the most recent changes.
+
+Directory Exclusion: Skips common non-website directories like .git, node_modules, and venv.
+
+XML Output: Generates a well-formatted, indented sitemap.xml file.
+
+🛠️ Requirements
+
+The application is written in Python and uses standard libraries, including Tkinter for the graphical user interface.
+
+Python: Version 3.x is required.
+
+Built-in Libraries: tkinter, os, datetime, xml.etree.ElementTree. No external installation is needed for these.
+
+How to Run
+
+Execute: Run the script from your terminal:
+
+python sitemap-generator.py
+
+
+🚀 How to Use the GUI
+
+The application provides a straightforward user interface broken down into three main steps:
+
+1. Select Root Folder
+
+This is the physical directory on your computer that represents the root of your website (e.g., your local public_html, build, or dist folder).
+
+Click the "Browse..." button and select the top-level folder of your project.
+
+2. Enter Base Public URL
+
+This is the most crucial step. This URL is used as the prefix for every link in the sitemap. It tells search engines the absolute path to your files.
+
+Input: Enter your full, publicly accessible domain name, including the scheme (http:// or https://).
+
+Example: If you enter https://mysite.com and the tool finds a local file named about/contact.html, the resulting URL in the sitemap will be https://mysite.com/about/contact.html.
+
+3. Generate Sitemap
+
+Before clicking the button, you can optionally set the Default Priority (e.g., 0.5 for regular pages, 1.0 for the homepage) and the Default Change Frequency (e.g., monthly).
+
+Click "Generate Sitemap from Local Files".
+
+The application will scan the folder and log all indexed URLs in the text box.
+
+Upon completion, a dialog will open prompting you to save the output file (usually named sitemap.xml).
+
+📄 Generated Sitemap Structure
+
+The resulting XML file will adhere to the Sitemaps Protocol and include the following elements for each indexed file:
+
+Tag
+
+Purpose
+
+Source
+
+<loc>
+
+The URL location of the document.
+
+Combination of Base URL and the local file path.
+
+<lastmod>
+
+The last modification date of the file.
+
+Read directly from the file's timestamp on your hard drive.
+
+<changefreq>
+
+How frequently the page is likely to change.
+
+User-defined default (e.g., weekly).
+
+<priority>
+
+The priority of this URL relative to others on your site (0.0 to 1.0).
