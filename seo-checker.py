@@ -12,6 +12,35 @@ MAX_TITLE_CHARS = 60    # Recommended maximum character length for Google Title
 MAX_DESC_CHARS = 160    # Recommended maximum character length for Google Meta Description
 MIN_DESC_CHARS = 70     # Recommended minimum character length for a good description
 
+# --- CONFIGURATION CONSTANTS FOR SCORING ---
+MAX_SCORE = 100 # The total possible score
+# Weights for critical factors (must sum to <= 100)
+SCORE_WEIGHTS = {
+    'Canonical_Present': 20,       # CRITICAL: Prevents duplication
+    'Robots_Optimal': 10,          # CRITICAL: Ensures indexing
+    'Title_Optimal': 15,           # Quality check (length, presence)
+    'Description_Optimal': 15,     # Quality check (length, presence)
+    'Hreflang_Present': 5,         # Internationalization
+    'OpenGraph_Present': 5,        # Social media sharing
+    'TwitterCard_Present': 5,      # Social media sharing
+    'Schema_Valid': 15,            # Structured data
+    'Image_Alt_Optimal': 10,       # Accessibility/Image SEO
+}
+
+# Thresholds for Letter Grades (Score % to Grade)
+GRADING_SCALE = {
+    95: 'A+',
+    90: 'A',
+    85: 'A-',
+    80: 'B+',
+    75: 'B',
+    70: 'B-',
+    60: 'C',
+    50: 'D',
+    0: 'F', # Anything below 50
+}
+
+
 # --- SCHEMA REQUIRED PROPERTY DEFINITIONS (Simplified Google set) ---
 # Maps schema type to a list of properties Google requires for Rich Results
 SCHEMA_REQUIREMENTS = {
@@ -180,7 +209,7 @@ def perform_metadata_audit(html_content, source_name):
         except:
              results['JSON_LD_STRUCTURED_DATA'].append({'Script_ID': f"#{i}", 'Schema_Type': '⚠️ PARSE ERROR', 'Content_Snippet': 'Error parsing JSON', 'Full_Content_Object': None})
 
-    # 4. Generate Audit Report to Buffer
+    # 4. Generate Audit Report to Buffer (This section is unchanged)
     output_buffer.append("="*70)
     output_buffer.append("           C O M P R E H E N S I V E   M E T A D A T A   A U D I T")
     output_buffer.append("="*70)
@@ -202,7 +231,8 @@ def perform_metadata_audit(html_content, source_name):
     format_audit_category("4. SOCIAL MEDIA TAGS - TWITTER CARD (X)", results['SOCIAL_MEDIA_TAGS']['TWITTER_CARD'], output_buffer)
     
     format_audit_category("\n5. PWA, MOBILE, AND DEVICE CONFIGURATION - Meta Tags", results['PWA_MOBILE_TAGS'], output_buffer)
-    format_link_rel_category("5. PWA, MOBILE, AND DEVICE CONFIGURATION - Link Tags (Manifest, Startup Image)", {k: v for k, v in results['CRITICAL_LINK_TAGS'].items() if 'manifest' in k or 'startup-image' in k}, output_buffer)
+    pwa_links = {k: v for k, v in results['CRITICAL_LINK_TAGS'].items() if 'manifest' in k or 'startup-image' in k}
+    format_link_rel_category("5. PWA, MOBILE, AND DEVICE CONFIGURATION - Link Tags (Manifest, Startup Image)", pwa_links, output_buffer)
     
     perf_hints = {k: v for k, v in results['TECHNICAL_BROWSER_TAGS'].items() if not k.startswith('http-equiv')}
     http_equivs = {k: v for k, v in results['TECHNICAL_BROWSER_TAGS'].items() if k.startswith('http-equiv')}
@@ -224,8 +254,20 @@ def perform_metadata_audit(html_content, source_name):
         output_buffer.append("❌ No JSON-LD Structured Data Found.")
     output_buffer.append("="*70)
 
-    # 5. Run Quality Analysis and Remediation Report
+    # 5. Run Quality Analysis
     quality_checks = analyze_tag_quality(results, soup)
+    
+    # --- NEW SCORING FEATURE INTEGRATION ---
+    score_percent, letter_grade = generate_overall_score_and_grade(results, quality_checks)
+    
+    output_buffer.append("\n\n" + "#"*70)
+    output_buffer.append(f"       🌟 O V E R A L L   S E O   S C O R E   &   G R A D E 🌟")
+    output_buffer.append("#"*70)
+    output_buffer.append(f"          Current Score: {score_percent}%")
+    output_buffer.append(f"          Final Grade: **{letter_grade}**")
+    output_buffer.append("#"*70)
+
+    # 6. Generate the detailed remediation report
     output_buffer.extend(generate_remediation_report(results, quality_checks))
     
     # Print the full report to the console before returning
@@ -326,6 +368,76 @@ def analyze_tag_quality(results, soup):
             quality_checks['Schema_Validation'].append(f'ℹ️ {schema_type}: Unknown schema type or no specific Google requirements.')
 
     return quality_checks
+
+def generate_overall_score_and_grade(results, quality_checks):
+    """Calculates the overall SEO score and converts it to a letter grade."""
+    current_score = 0
+    
+    # 1. Canonical Link (20 Points)
+    if results['CORE_SEO_TAGS']['Canonical'] != '❌ MISSING':
+        current_score += SCORE_WEIGHTS['Canonical_Present']
+    
+    # 2. Robots Tag (10 Points)
+    robots = results['CORE_SEO_TAGS']['Robots'].lower()
+    if robots != '❌ MISSING' and 'noindex' not in robots:
+        current_score += SCORE_WEIGHTS['Robots_Optimal']
+        
+    # 3. Title Quality (15 Points)
+    if quality_checks['Title']['Status'] == '✅ OPTIMAL':
+        current_score += SCORE_WEIGHTS['Title_Optimal']
+    elif quality_checks['Title']['Status'] in ['⚠️ TOO LONG', '⚠️ TOO SHORT']:
+        # Assign partial credit if present but not optimal (e.g., half points)
+        current_score += SCORE_WEIGHTS['Title_Optimal'] * 0.5 
+        
+    # 4. Description Quality (15 Points)
+    if quality_checks['Description']['Status'] == '✅ OPTIMAL':
+        current_score += SCORE_WEIGHTS['Description_Optimal']
+    elif quality_checks['Description']['Status'] in ['⚠️ TOO LONG', '⚠️ TOO SHORT']:
+        current_score += SCORE_WEIGHTS['Description_Optimal'] * 0.5 
+        
+    # 5. Hreflang Tags (5 Points)
+    if results['CORE_SEO_TAGS']['Hreflang_Tags']:
+        current_score += SCORE_WEIGHTS['Hreflang_Present']
+        
+    # 6. Open Graph Tags (5 Points)
+    if results['SOCIAL_MEDIA_TAGS']['OPEN_GRAPH']:
+        current_score += SCORE_WEIGHTS['OpenGraph_Present']
+        
+    # 7. Twitter Card Tags (5 Points)
+    if results['SOCIAL_MEDIA_TAGS']['TWITTER_CARD']:
+        current_score += SCORE_WEIGHTS['TwitterCard_Present']
+
+    # 8. Schema Validation (15 Points)
+    valid_schemas = sum(1 for status in quality_checks['Schema_Validation'] if status.startswith('✅'))
+    total_schemas = len(results['JSON_LD_STRUCTURED_DATA'])
+    if total_schemas > 0:
+        # Score proportional to the number of valid schemas
+        schema_points = SCORE_WEIGHTS['Schema_Valid'] * (valid_schemas / total_schemas)
+        current_score += schema_points
+
+    # 9. Image Alt Text (10 Points)
+    total_images = quality_checks['Image_Alt_Text']['Total']
+    missing_alt = quality_checks['Image_Alt_Text']['Missing']
+    if total_images > 0:
+        # Score proportional to the number of images with alt text
+        alt_points = SCORE_WEIGHTS['Image_Alt_Optimal'] * (1 - (missing_alt / total_images))
+        current_score += alt_points
+    # If no images, we don't penalize, so we assume optimal (10 points)
+    elif total_images == 0:
+        current_score += SCORE_WEIGHTS['Image_Alt_Optimal']
+        
+    # Calculate the final percentage and round the score
+    percentage = round((current_score / MAX_SCORE) * 100)
+
+    # Determine the letter grade
+    final_grade = 'N/A'
+    # Iterate through the scale keys in descending order
+    for threshold, grade in sorted(GRADING_SCALE.items(), reverse=True):
+        if percentage >= threshold:
+            final_grade = grade
+            break
+            
+    return percentage, final_grade
 
 def generate_remediation_report(results, quality_checks):
     """Generates a list of missing and required items with actionable fixes."""
@@ -452,13 +564,6 @@ def save_report_to_pdf(report_content, filename):
     pdf.set_font("Arial", size=10)
     
     try:
-        # FPDF requires a non-monospaced font to handle common characters, 
-        # but we need to ensure line breaks are handled correctly.
-        # We'll use multi_cell for automatic wrapping.
-        
-        # Replace the HTML code blocks marker with something PDF-friendly
-        # Or, just let it print as text, which is simpler for FPDF
-        
         # Prepare content: strip down formatting that won't transfer (like **)
         cleaned_content = report_content.replace('**', '')
         
