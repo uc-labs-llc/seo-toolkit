@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Analytics Platform - Complete Setup Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .guide-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .section-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .file-tree {
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            border-left: 4px solid #3b82f6;
+        }
+        .feature-badge {
+            background: #dbeafe;
+            color: #1e40af;
+            border-radius: 1rem;
+        }
+        .nav-pill {
+            transition: all 0.3s ease;
+        }
+        .nav-pill.active {
+            background: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="py-8">
+    <div class="max-w-6xl mx-auto px-4">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                Web Analytics Platform
+            </h1>
+            <p class="text-xl text-blue-100 mb-8">
+                Complete Setup Guide & User Manual
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <span class="feature-badge px-4 py-2 text-sm font-medium">
+                    <i class="fas fa-shield-alt mr-2"></i>Secure
+                </span>
+                <span class="feature-badge px-4 py-2 text-sm font-medium">
+                    <i class="fas fa-chart-line mr-2"></i>Real-time Analytics
+                </span>
+                <span class="feature-badge px-4 py-2 text-sm font-medium">
+                    <i class="fas fa-database mr-2"></i>Self-hosted
+                </span>
+                <span class="feature-badge px-4 py-2 text-sm font-medium">
+                    <i class="fas fa-mobile-alt mr-2"></i>Responsive
+                </span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="guide-container p-6 md:p-8">
+            <!-- Navigation -->
+            <nav class="flex flex-wrap gap-2 mb-8 p-4 bg-gray-50 rounded-lg">
+                <button class="nav-pill active px-4 py-2 rounded-full text-sm font-medium" onclick="showSection('overview')">
+                    <i class="fas fa-home mr-2"></i>Overview
+                </button>
+                <button class="nav-pill px-4 py-2 rounded-full text-sm font-medium" onclick="showSection('files')">
+                    <i class="fas fa-folder mr-2"></i>File Structure
+                </button>
+                <button class="nav-pill px-4 py-2 rounded-full text-sm font-medium" onclick="showSection('setup')">
+                    <i class="fas fa-server mr-2"></i>Apache Setup
+                </button>
+                <button class="nav-pill px-4 py-2 rounded-full text-sm font-medium" onclick="showSection('security')">
+                    <i class="fas fa-shield-alt mr-2"></i>Security
+                </button>
+                <button class="nav-pill px-4 py-2 rounded-full text-sm font-medium" onclick="showSection('features')">
+                    <i class="fas fa-star mr-2"></i>Features
+                </button>
+                <button class="nav-pill px-4 py-2 rounded-full text-sm font-medium" onclick="showSection('usage')">
+                    <i class="fas fa-play mr-2"></i>Usage Guide
+                </button>
+            </nav>
+
+            <!-- Overview Section -->
+            <section id="overview-section" class="section-content">
+                <div class="section-card p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-rocket text-blue-500 mr-3"></i>
+                        Platform Overview
+                    </h2>
+                    <p class="text-gray-600 mb-4">
+                        A complete, self-hosted web analytics platform that provides real-time insights into user behavior, 
+                        session tracking, and performance metrics. Built with modern web technologies and designed for 
+                        privacy-conscious organizations.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mt-6">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-blue-800 mb-2">
+                                <i class="fas fa-check-circle mr-2"></i>What It Does
+                            </h3>
+                            <ul class="text-blue-700 text-sm space-y-1">
+                                <li>• Tracks user sessions and page views</li>
+                                <li>• Monitors user behavior and journeys</li>
+                                <li>• Provides real-time analytics dashboard</li>
+                                <li>• Tracks custom events and conversions</li>
+                                <li>• Monitors performance and errors</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-green-800 mb-2">
+                                <i class="fas fa-bullseye mr-2"></i>Key Benefits
+                            </h3>
+                            <ul class="text-green-700 text-sm space-y-1">
+                                <li>• 100% data ownership and privacy</li>
+                                <li>• No third-party tracking</li>
+                                <li>• Real-time insights</li>
+                                <li>• Cost-effective solution</li>
+                                <li>• Customizable and extensible</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-sitemap text-purple-500 mr-3"></i>
+                        How It Works
+                    </h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="step-number mx-auto mb-3">1</div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Data Collection</h4>
+                            <p class="text-gray-600 text-sm">JavaScript tracker collects user interactions and sends to PHP endpoint</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="step-number mx-auto mb-3">2</div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Data Storage</h4>
+                            <p class="text-gray-600 text-sm">PHP processes and stores data in log files with session tracking</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="step-number mx-auto mb-3">3</div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Data Visualization</h4>
+                            <p class="text-gray-600 text-sm">Dashboard reads and analyzes data, displaying insights in real-time</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- File Structure Section -->
+            <section id="files-section" class="section-content hidden">
+                <div class="section-card p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-folder-tree text-green-500 mr-3"></i>
+                        File Structure & Architecture
+                    </h2>
+                    
+                    <div class="file-tree p-4 mb-6">
+                        <div class="font-mono text-sm">
+                            <div class="flex items-center text-gray-700 mb-2">
+                                <i class="fas fa-folder text-yellow-500 mr-2"></i>
+                                <span class="font-semibold">/analytics/</span>
+                            </div>
+                            <div class="ml-4 space-y-1">
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-file-code text-blue-400 mr-2"></i>
+                                    <span>user.html</span>
+                                    <span class="text-gray-400 text-xs ml-2">- Demo user page</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-file-code text-blue-400 mr-2"></i>
+                                    <span>dashboard.html</span>
+                                    <span class="text-gray-400 text-xs ml-2">- Analytics dashboard</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-file-code text-blue-400 mr-2"></i>
+                                    <span>tracker.js</span>
+                                    <span class="text-gray-400 text-xs ml-2">- Client-side tracking</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-file-code text-green-400 mr-2"></i>
+                                    <span>log_endpoint.php</span>
+                                    <span class="text-gray-400 text-xs ml-2">- Data processing API</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-file-code text-green-400 mr-2"></i>
+                                    <span>get_log_data.php</span>
+                                    <span class="text-gray-400 text-xs ml-2">- Data retrieval API</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-file-alt text-red-400 mr-2"></i>
+                                    <span>analytics.log</span>
+                                    <span class="text-gray-400 text-xs ml-2">- Data storage (auto-generated)</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-file-text text-purple-400 mr-2"></i>
+                                    <span>.htaccess</span>
+                                    <span class="text-gray-400 text-xs ml-2">- Security configuration</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-3">Core Files Explained</h3>
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-blue-500 pl-4">
+                                    <h4 class="font-medium text-gray-800">tracker.js</h4>
+                                    <p class="text-gray-600 text-sm">Client-side JavaScript that tracks user interactions, manages sessions, and sends data to the server.</p>
+                                </div>
+                                <div class="border-l-4 border-green-500 pl-4">
+                                    <h4 class="font-medium text-gray-800">log_endpoint.php</h4>
+                                    <p class="text-gray-600 text-sm">PHP API endpoint that receives, validates, and stores analytics data in the log file.</p>
+                                </div>
+                                <div class="border-l-4 border-purple-500 pl-4">
+                                    <h4 class="font-medium text-gray-800">dashboard.html</h4>
+                                    <p class="text-gray-600 text-sm">Interactive dashboard that visualizes analytics data with charts, metrics, and real-time updates.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-3">Data Flow</h3>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <ol class="text-sm text-gray-700 space-y-2">
+                                    <li class="flex items-start">
+                                        <span class="bg-blue-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center mr-2 mt-0.5">1</span>
+                                        User visits website with tracker.js
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-blue-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center mr-2 mt-0.5">2</span>
+                                        Tracker collects data and sends to log_endpoint.php
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-blue-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center mr-2 mt-0.5">3</span>
+                                        PHP validates and stores data in analytics.log
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-blue-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center mr-2 mt-0.5">4</span>
+                                        Dashboard reads data via get_log_data.php
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="bg-blue-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center mr-2 mt-0.5">5</span>
+                                        Data is visualized in real-time charts and metrics
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Apache Setup Section -->
+            <section id="setup-section" class="section-content hidden">
+                <div class="section-card p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-server text-orange-500 mr-3"></i>
+                        Apache Web Server Setup Guide
+                    </h2>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-yellow-700">
+                                    <strong>Prerequisites:</strong> Ubuntu Server with Apache2 installed. Basic terminal knowledge required.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Step 1 -->
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h3 class="font-semibold text-gray-800 mb-2">
+                                <span class="step-number inline-block mr-2">1</span>
+                                Enable Required Apache Modules
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-3">Enable mod_rewrite for .htaccess support and clean URLs.</p>
+                            <div class="code-block p-4 rounded mb-2">
+                                <span class="text-green-400"># Enable rewrite module</span><br>
+                                <span class="text-blue-400">sudo</span> a2enmod rewrite<br><br>
+                                <span class="text-green-400"># Enable headers module for security</span><br>
+                                <span class="text-blue-400">sudo</span> a2enmod headers
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h3 class="font-semibold text-gray-800 mb-2">
+                                <span class="step-number inline-block mr-2">2</span>
+                                Configure Virtual Host
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-3">Edit your site configuration to enable .htaccess and set proper permissions.</p>
+                            <div class="code-block p-4 rounded mb-2">
+                                <span class="text-green-400"># Edit your site configuration</span><br>
+                                <span class="text-blue-400">sudo</span> nano /etc/apache2/sites-available/000-default.conf
+                            </div>
+                            <p class="text-gray-600 text-sm mb-2">Add this inside your VirtualHost block:</p>
+                            <div class="code-block p-4 rounded">
+                                <span class="text-green-400">&lt;!-- Enable .htaccess in analytics directory --&gt;</span><br>
+                                &lt;Directory <span class="text-yellow-300">/var/www/html/analytics</span>&gt;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;AllowOverride All<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;Require all granted<br>
+                                &lt;/Directory&gt;
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h3 class="font-semibold text-gray-800 mb-2">
+                                <span class="step-number inline-block mr-2">3</span>
+                                Set File Permissions
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-3">Ensure proper ownership and permissions for security.</p>
+                            <div class="code-block p-4 rounded">
+                                <span class="text-green-400"># Navigate to your directory</span><br>
+                                <span class="text-blue-400">cd</span> /var/www/html/analytics<br><br>
+                                <span class="text-green-400"># Set Apache as owner</span><br>
+                                <span class="text-blue-400">sudo</span> chown -R www-data:www-data .<br><br>
+                                <span class="text-green-400"># Set secure permissions</span><br>
+                                <span class="text-blue-400">sudo</span> chmod 644 *.html *.js *.php<br>
+                                <span class="text-blue-400">sudo</span> chmod 640 analytics.log
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h3 class="font-semibold text-gray-800 mb-2">
+                                <span class="step-number inline-block mr-2">4</span>
+                                Test and Restart Apache
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-3">Validate configuration and apply changes.</p>
+                            <div class="code-block p-4 rounded">
+                                <span class="text-green-400"># Test configuration syntax</span><br>
+                                <span class="text-blue-400">sudo</span> apache2ctl configtest<br><br>
+                                <span class="text-green-400"># If syntax is OK, restart Apache</span><br>
+                                <span class="text-blue-400">sudo</span> systemctl restart apache2<br><br>
+                                <span class="text-green-400"># Enable Apache to start on boot</span><br>
+                                <span class="text-blue-400">sudo</span> systemctl enable apache2
+                            </div>
+                        </div>
+
+                        <!-- Step 5 -->
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h3 class="font-semibold text-gray-800 mb-2">
+                                <span class="step-number inline-block mr-2">5</span>
+                                Verify Installation
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-3">Test that everything is working correctly.</p>
+                            <div class="code-block p-4 rounded">
+                                <span class="text-green-400"># Test dashboard access</span><br>
+                                curl -I http://localhost/analytics/dashboard.html<br><br>
+                                <span class="text-green-400"># Test API endpoint</span><br>
+                                curl -X POST http://localhost/analytics/log_endpoint.php \<br>
+                                &nbsp;&nbsp;-H <span class="text-yellow-300">"Content-Type: application/json"</span> \<br>
+                                &nbsp;&nbsp;-d <span class="text-yellow-300">'{"action":"TEST"}'</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Section -->
+            <section id="security-section" class="section-content hidden">
+                <div class="section-card p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-shield-alt text-red-500 mr-3"></i>
+                        Security Configuration
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-red-800 mb-2">
+                                <i class="fas fa-exclamation-circle mr-2"></i>Security Risks Addressed
+                            </h3>
+                            <ul class="text-red-700 text-sm space-y-1">
+                                <li>• Direct file access to analytics data</li>
+                                <li>• Unauthorized dashboard access</li>
+                                <li>• API endpoint abuse</li>
+                                <li>• Log file exposure</li>
+                                <li>• SQL injection (preventive)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-green-800 mb-2">
+                                <i class="fas fa-check-circle mr-2"></i>Security Features
+                            </h3>
+                            <ul class="text-green-700 text-sm space-y-1">
+                                <li>• .htaccess file protection</li>
+                                <li>• Input validation & sanitization</li>
+                                <li>• File permission hardening</li>
+                                <li>• Rate limiting ready</li>
+                                <li>• Secure session management</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 class="font-semibold text-gray-800 mb-3">.htaccess Security Configuration</h3>
+                    <p class="text-gray-600 text-sm mb-4">Create this file in your /analytics/ directory to protect sensitive files:</p>
+                    
+                    <div class="code-block p-4 rounded mb-4">
+                        <span class="text-green-400"># Block direct access to analytics log file</span><br>
+                        &lt;Files <span class="text-yellow-300">"analytics.log"</span>&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Order Allow,Deny<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Deny from all<br>
+                        &lt;/Files&gt;<br><br>
+                        
+                        <span class="text-green-400"># Protect PHP endpoints</span><br>
+                        &lt;Files <span class="text-yellow-300">"log_endpoint.php"</span>&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Order Allow,Deny<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Allow from all<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-green-400"># Add rate limiting here if needed</span><br>
+                        &lt;/Files&gt;<br><br>
+                        
+                        <span class="text-green-400"># Password protect dashboard (optional)</span><br>
+                        &lt;Files <span class="text-yellow-300">"dashboard.html"</span>&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;AuthType Basic<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;AuthName <span class="text-yellow-300">"Analytics Dashboard"</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;AuthUserFile /etc/apache2/.htpasswd<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Require valid-user<br>
+                        &lt;/Files&gt;
+                    </div>
+
+                    <h3 class="font-semibold text-gray-800 mb-3">PHP Security Measures</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-3 rounded">
+                            <h4 class="font-medium text-blue-800 mb-1">Input Validation</h4>
+                            <p class="text-blue-700 text-xs">All incoming data is validated and sanitized before processing.</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded">
+                            <h4 class="font-medium text-blue-800 mb-1">JSON Validation</h4>
+                            <p class="text-blue-700 text-xs">Strict JSON parsing with error handling prevents malformed data.</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded">
+                            <h4 class="font-medium text-blue-800 mb-1">File Locking</h4>
+                            <p class="text-blue-700 text-xs">Prevents concurrent write issues to the log file.</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded">
+                            <h4 class="font-medium text-blue-800 mb-1">Error Handling</h4>
+                            <p class="text-blue-700 text-xs">Comprehensive error handling without exposing sensitive information.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section id="features-section" class="section-content hidden">
+                <div class="section-card p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-star text-yellow-500 mr-3"></i>
+                        Platform Features & Capabilities
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Feature 1 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <div class="text-blue-500 text-xl mb-2">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Session Tracking</h4>
+                            <p class="text-gray-600 text-sm">Track user sessions with unique IDs, duration, and cross-page journeys.</p>
+                            <ul class="text-gray-500 text-xs mt-2 space-y-1">
+                                <li>• 30-minute session timeout</li>
+                                <li>• Cross-page journey tracking</li>
+                                <li>• Bounce rate calculation</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 2 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <div class="text-green-500 text-xl mb-2">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Real-time Dashboard</h4>
+                            <p class="text-gray-600 text-sm">Live analytics with auto-refresh, charts, and interactive visualizations.</p>
+                            <ul class="text-gray-500 text-xs mt-2 space-y-1">
+                                <li>• Auto-refresh every 15 seconds</li>
+                                <li>• Interactive Chart.js graphs</li>
+                                <li>• Real-time metrics</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 3 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <div class="text-purple-500 text-xl mb-2">
+                                <i class="fas fa-mouse-pointer"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Event Tracking</h4>
+                            <p class="text-gray-600 text-sm">Track custom events, button clicks, form submissions, and downloads.</p>
+                            <ul class="text-gray-500 text-xs mt-2 space-y-1">
+                                <li>• Custom event categories</li>
+                                <li>• Form submission tracking</li>
+                                <li>• Outbound link tracking</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 4 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <div class="text-red-500 text-xl mb-2">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Error Monitoring</h4>
+                            <p class="text-gray-600 text-sm">Capture and analyze JavaScript errors and performance issues.</p>
+                            <ul class="text-gray-500 text-xs mt-2 space-y-1">
+                                <li>• JavaScript error tracking</li>
+                                <li>• Performance metrics</li>
+                                <li>• Error rate calculation</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 5 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <div class="text-orange-500 text-xl mb-2">
+                                <i class="fas fa-desktop"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Device Analytics</h4>
+                            <p class="text-gray-600 text-sm">Comprehensive device, browser, and operating system analytics.</p>
+                            <ul class="text-gray-500 text-xs mt-2 space-y-1">
+                                <li>• Browser detection</li>
+                                <li>• OS platform tracking</li>
+                                <li>• Screen resolution analysis</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 6 -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <div class="text-indigo-500 text-xl mb-2">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Data Export</h4>
+                            <p class="text-gray-600 text-sm">Export analytics data in JSON format for external analysis.</p>
+                            <ul class="text-gray-500 text-xs mt-2 space-y-1">
+                                <li>• JSON data export</li>
+                                <li>• Complete session data</li>
+                                <li>• Raw event data included</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white">
+                        <h3 class="font-semibold text-xl mb-2">Advanced Analytics Features</h3>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <ul class="space-y-1">
+                                    <li>• User engagement scoring</li>
+                                    <li>• Peak hour detection</li>
+                                    <li>• Returning user analysis</li>
+                                    <li>• Page transition flows</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <ul class="space-y-1">
+                                    <li>• Custom event segmentation</li>
+                                    <li>• Performance monitoring</li>
+                                    <li>• Geographic ready (IP geolocation)</li>
+                                    <li>• Mobile-responsive design</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Usage Guide Section -->
+            <section id="usage-section" class="section-content hidden">
+                <div class="section-card p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-play-circle text-green-500 mr-3"></i>
+                        Usage Guide & Implementation
+                    </h2>
+
+                    <div class="space-y-6">
+                        <!-- Implementation -->
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-3">Adding Analytics to Your Website</h3>
+                            <p class="text-gray-600 text-sm mb-3">Include the tracker in your website's HTML files:</p>
+                            <div class="code-block p-4 rounded mb-4">
+                                <span class="text-green-400">&lt;!-- Add to your website's HTML --&gt;</span><br>
+                                &lt;script <span class="text-yellow-300">src="/analytics/tracker.js"</span>&gt;&lt;/script&gt;
+                            </div>
+                            <p class="text-gray-600 text-sm">The tracker will automatically start collecting data when the page loads.</p>
+                        </div>
+
+                        <!-- Custom Events -->
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-3">Tracking Custom Events</h3>
+                            <p class="text-gray-600 text-sm mb-3">Track specific user interactions with custom events:</p>
+                            <div class="code-block p-4 rounded mb-2">
+                                <span class="text-green-400">// Track button clicks automatically</span><br>
+                                &lt;button <span class="text-yellow-300">data-track="signup-button"</span>&gt;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;Sign Up<br>
+                                &lt;/button&gt;<br><br>
+                                
+                                <span class="text-green-400">// Manual event tracking</span><br>
+                                AnalyticsTracker.trackEvent(<span class="text-yellow-300">'ecommerce'</span>, <span class="text-yellow-300">'purchase'</span>, <span class="text-yellow-300">'premium-plan'</span>, <span class="text-yellow-300">99.99</span>);
+                            </div>
+                        </div>
+
+                        <!-- Dashboard Access -->
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-3">Accessing the Dashboard</h3>
+                            <p class="text-gray-600 text-sm mb-3">View your analytics data through the dashboard:</p>
+                            <div class="bg-blue-50 p-4 rounded">
+                                <p class="text-blue-800 text-sm">
+                                    <strong>URL:</strong> http://your-domain.com/analytics/dashboard.html<br>
+                                    <strong>Default:</strong> No password required (add .htaccess protection for production)
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Maintenance -->
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-3">Maintenance & Monitoring</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <h4 class="font-medium text-gray-800 mb-1">Log Rotation</h4>
+                                    <p class="text-gray-600 text-xs">Set up log rotation to prevent unlimited file growth:</p>
+                                    <div class="code-block p-2 rounded mt-1 text-xs">
+                                        sudo nano /etc/logrotate.d/analytics
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <h4 class="font-medium text-gray-800 mb-1">Performance Monitoring</h4>
+                                    <p class="text-gray-600 text-xs">Monitor Apache and PHP performance for large-scale deployments.</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <h4 class="font-medium text-gray-800 mb-1">Backup Strategy</h4>
+                                    <p class="text-gray-600 text-xs">Regularly backup your analytics.log file and configuration.</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <h4 class="font-medium text-gray-800 mb-1">Security Updates</h4>
+                                    <p class="text-gray-600 text-xs">Keep Apache, PHP, and your system updated with security patches.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Troubleshooting -->
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-3">Troubleshooting Common Issues</h3>
+                            <div class="space-y-2">
+                                <details class="bg-gray-50 p-3 rounded">
+                                    <summary class="font-medium cursor-pointer">Data not appearing in dashboard</summary>
+                                    <p class="text-gray-600 text-sm mt-2 ml-4">Check browser console for JavaScript errors and verify PHP file permissions.</p>
+                                </details>
+                                <details class="bg-gray-50 p-3 rounded">
+                                    <summary class="font-medium cursor-pointer">403 Forbidden errors</summary>
+                                    <p class="text-gray-600 text-sm mt-2 ml-4">Verify .htaccess configuration and file permissions in /analytics/ directory.</p>
+                                </details>
+                                <details class="bg-gray-50 p-3 rounded">
+                                    <summary class="font-medium cursor-pointer">High server load</summary>
+                                    <p class="text-gray-600 text-sm mt-2 ml-4">Implement rate limiting in log_endpoint.php and consider log rotation.</p>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+    <footer style="text-align: center; padding-top: 1.5rem; margin-top: 2rem; border-top: 1px solid #2d2d4d; color: #a0a0c0; background-color: #0f0f23;">
+            <div class="copyright">
+                <p>&copy; 2025 Cliff Larson. All rights reserved.</p>
+                <p>Email: <a style="color: #667eea;" href="mailto:info@penta5w.com">info@penta5w.com</a></p>
+                <p><em>Educational use only - No modifications permitted without authorization</em></p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-pill').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+            
+            // Activate clicked nav item
+            event.target.classList.add('active');
+        }
+
+        // Initialize first section as active
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('overview');
+        });
+    </script>
+</body>
+</html>
