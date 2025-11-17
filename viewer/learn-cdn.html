@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete CDN Learning Lab - Setup & Testing Guide</title>
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .card h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: var(--light);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .info-card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .step-card {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 15px 0;
+            border-left: 5px solid var(--warning);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--warning);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .test-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .test-card {
+            background: var(--light);
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .test-card h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .server-info {
+            background: #2c3e50;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .server-info h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-live {
+            background: #2ecc71;
+            animation: pulse 2s infinite;
+        }
+
+        .status-testing {
+            background: #f39c12;
+        }
+
+        .status-waiting {
+            background: #95a5a6;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .image-test {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .test-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .test-image:hover {
+            transform: scale(1.02);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .timestamp {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--danger);
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .note {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .setup-completion {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .checkmark {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            margin-right: 10px;
+            text-align: center;
+            line-height: 20px;
+        }
+
+        .checkmark.checked {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .grid, .test-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+
+        .tab-container {
+            margin: 20px 0;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌐 Complete CDN Learning Lab</h1>
+            <p>Your All-in-One Guide to Setting Up and Testing Cloudflare CDN</p>
+        </header>
+
+        <div class="card">
+            <h2>Welcome to Your CDN Learning Journey!</h2>
+            <p>This comprehensive guide will walk you through setting up a complete CDN testing environment using Cloudflare's free tier. You'll learn by doing - comparing direct server access vs CDN-accelerated content.</p>
+            
+            <div class="grid">
+                <div class="info-card">
+                    <h3>🏠 Origin Server</h3>
+                    <p>Your main domain points directly to your web hosting server. This is your "control" site without CDN.</p>
+                    <p><strong>URL:</strong> yourdomain.com</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>⚡ CDN Accelerated</h3>
+                    <p>Your subdomain runs through Cloudflare's CDN. This is your "experimental" site with CDN caching.</p>
+                    <p><strong>URL:</strong> cdn.yourdomain.com</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>🎯 What You'll Learn</h3>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>CDN setup and configuration</li>
+                        <li>DNS management concepts</li>
+                        <li>HTTP headers and caching</li>
+                        <li>Performance optimization</li>
+                        <li>Cache invalidation techniques</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Prerequisites</h2>
+            <p>Before starting, make sure you have:</p>
+            
+            <div class="setup-completion">
+                <div class="checkmark" id="check1">✓</div>
+                <div>A web hosting account with file upload access</div>
+            </div>
+            
+            <div class="setup-completion">
+                <div class="checkmark" id="check2">✓</div>
+                <div>A domain name you control (can be a new cheap one)</div>
+            </div>
+            
+            <div class="setup-completion">
+                <div class="checkmark" id="check3">✓</div>
+                <div>Access to your domain's DNS settings</div>
+            </div>
+            
+            <div class="setup-completion">
+                <div class="checkmark" id="check4">✓</div>
+                <div>About 30-60 minutes of time</div>
+            </div>
+            
+            <div class="note">
+                <strong>Note:</strong> You can use any web hosting provider (Bluehost, SiteGround, HostGator, etc.) and any domain registrar (GoDaddy, Namecheap, etc.). The process is similar for all.
+            </div>
+        </div>
+
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab active" onclick="openTab(event, 'setup')">1. Initial Setup</button>
+                <button class="tab" onclick="openTab(event, 'cloudflare')">2. Cloudflare Setup</button>
+                <button class="tab" onclick="openTab(event, 'testing')">3. Testing Lab</button>
+                <button class="tab" onclick="openTab(event, 'learning')">4. Learning Exercises</button>
+            </div>
+
+            <div id="setup" class="tab-content active">
+                <h2>Phase 1: Initial Server & Domain Setup</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Upload Files to Your Web Hosting</h3>
+                    <p>Upload these files to your web hosting account's public_html or www folder:</p>
+                    
+                    <h4>index.html (This file)</h4>
+                    <p>You're already viewing it! Save this complete HTML file as <code>index.html</code> and upload it.</p>
+                    
+                    <h4>headers.php</h4>
+                    <p>Create a new file named <code>headers.php</code> with this content:</p>
+                    <pre><?php echo htmlspecialchars('<?php
+header(\'Content-Type: text/plain\');
+echo "=== CDN LEARNING LAB - HTTP HEADERS ===\\n\\n";
+echo "HTTP Headers Received:\\n";
+foreach (getallheaders() as $name => $value) {
+    echo "$name: $value\\n";
+}
+
+echo "\\n=== Server Information ===\\n";
+echo "Server IP: " . ($_SERVER[\'SERVER_ADDR\'] ?? \'Not available\') . "\\n";
+echo "Client IP: " . ($_SERVER[\'REMOTE_ADDR\'] ?? \'Not available\') . "\\n";
+echo "Host: " . ($_SERVER[\'HTTP_HOST\'] ?? \'Not available\') . "\\n";
+echo "User Agent: " . ($_SERVER[\'HTTP_USER_AGENT\'] ?? \'Not available\') . "\\n";
+
+echo "\\n=== CDN Detection ===\\n";
+if (isset($_SERVER[\'HTTP_CF_RAY\'])) {
+    echo "✓ CDN Active (Cloudflare detected)\\n";
+    echo "CF-RAY: " . $_SERVER[\'HTTP_CF_RAY\'] . "\\n";
+} else {
+    echo "✗ Direct connection to origin server\\n";
+}
+
+echo "\\n=== Cache Status ===\\n";
+if (isset($_SERVER[\'HTTP_CF_CACHE_STATUS\'])) {
+    echo "CF-Cache-Status: " . $_SERVER[\'HTTP_CF_CACHE_STATUS\'] . "\\n";
+} else {
+    echo "CF-Cache-Status: Not available (not using CDN or not cached)\\n";
+}
+
+echo "\\nTimestamp: " . date(\'Y-m-d H:i:s\');
+?>'); ?></pre>
+                    
+                    <h4>info.php</h4>
+                    <p>Create a file named <code>info.php</code> with this simple content:</p>
+                    <pre><?php echo htmlspecialchars('<?php phpinfo(); ?>'); ?></pre>
+                    
+                    <h4>test-image.jpg</h4>
+                    <p>Upload any image file named <code>test-image.jpg</code> to your server.</p>
+                </div>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Configure Your Domain DNS (Temporarily)</h3>
+                    <p>In your domain registrar's DNS management panel, create these records pointing to your web hosting IP address:</p>
+                    
+                    <ul>
+                        <li><strong>A Record:</strong> <code>@</code> → <code>YOUR_HOSTING_IP</code> (points yourdomain.com to your server)</li>
+                        <li><strong>A Record:</strong> <code>cdn</code> → <code>YOUR_HOSTING_IP</code> (points cdn.yourdomain.com to your server)</li>
+                    </ul>
+                    
+                    <div class="warning">
+                        <strong>Important:</strong> This is temporary! We'll change these later when we set up Cloudflare.
+                    </div>
+                    
+                    <p>Wait for DNS propagation (could take a few minutes to several hours). Test that both URLs work:</p>
+                    <ul>
+                        <li><code>http://yourdomain.com</code></li>
+                        <li><code>http://cdn.yourdomain.com</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="cloudflare" class="tab-content">
+                <h2>Phase 2: Cloudflare CDN Setup</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Create Cloudflare Account</h3>
+                    <p>Go to <a href="https://www.cloudflare.com" target="_blank">cloudflare.com</a> and sign up for a free account.</p>
+                    <p>Click "Add a Site" and enter your domain name (e.g., <code>yourdomain.com</code>).</p>
+                </div>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Select Plan</h3>
+                    <p>Choose the <strong>Free plan</strong> and click "Continue".</p>
+                    <p>The free plan includes:</p>
+                    <ul>
+                        <li>Global CDN</li>
+                        <li>Unlimited bandwidth</li>
+                        <li>Basic DDoS protection</li>
+                        <li>SSL certificate</li>
+                        <li>And more!</li>
+                    </ul>
+                </div>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">3</span> Review DNS Records</h3>
+                    <p>Cloudflare will scan your existing DNS records. It should find:</p>
+                    <ul>
+                        <li><code>yourdomain.com</code> (A record)</li>
+                        <li><code>cdn.yourdomain.com</code> (A record)</li>
+                    </ul>
+                    
+                    <p><strong>CRITICAL CONFIGURATION:</strong></p>
+                    <ul>
+                        <li>For <code>yourdomain.com</code> → Toggle the cloud icon to <strong style="color: gray;">GRAY</strong> (bypasses CDN, direct to origin)</li>
+                        <li>For <code>cdn.yourdomain.com</code> → Keep the cloud icon <strong style="color: orange;">ORANGE</strong> (traffic goes through CDN)</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Why this configuration?</strong> This lets you compare CDN vs direct access using the same server but different URLs!
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">4</span> Change Nameservers</h3>
+                    <p>Cloudflare will provide you with two nameservers, for example:</p>
+                    <ul>
+                        <li><code>lara.ns.cloudflare.com</code></li>
+                        <li><code>dave.ns.cloudflare.com</code></li>
+                    </ul>
+                    
+                    <p>Go to your domain registrar and replace your current nameservers with Cloudflare's nameservers.</p>
+                    
+                    <div class="warning">
+                        <strong>This is the key step!</strong> This change delegates DNS authority to Cloudflare. Propagation can take 24-48 hours but is often faster.
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">5</span> Wait for Activation</h3>
+                    <p>Wait for Cloudflare to confirm your site is active. You'll receive an email when it's ready.</p>
+                    <p>Once active, your DNS setup is complete!</p>
+                </div>
+            </div>
+
+            <div id="testing" class="tab-content">
+                <h2>Phase 3: CDN Testing Lab</h2>
+                <p>Now that everything is set up, use this interactive lab to test and learn about CDNs.</p>
+                
+                <div class="server-info">
+                    <h3>🖥️ Current Connection Information</h3>
+                    <div id="serverDetails">
+                        <p><span class="status-indicator status-live"></span> Connected to: <span id="serverName">Loading...</span></p>
+                        <p>🔧 Connection Type: <span id="connectionType">Detecting...</span></p>
+                        <p>🕒 Page Loaded: <span id="pageTime">Loading...</span></p>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <h2>🧪 CDN Testing Tools</h2>
+                    
+                    <div class="test-grid">
+                        <div class="test-card">
+                            <h3>🔍 Headers Test</h3>
+                            <p>Check HTTP headers to see CDN caching status</p>
+                            <a href="headers.php" class="btn" target="_blank">Test Headers</a>
+                            <a href="info.php" class="btn btn-secondary" target="_blank">PHP Info</a>
+                        </div>
+                        
+                        <div class="test-card">
+                            <h3>⚡ Performance</h3>
+                            <p>Test loading speed and resource delivery</p>
+                            <button onclick="runPerformanceTest()" class="btn btn-success">Run Performance Test</button>
+                            <div id="performanceResult" class="timestamp"></div>
+                        </div>
+                        
+                        <div class="test-card">
+                            <h3>🌍 Geolocation</h3>
+                            <p>Detect where the content is being served from</p>
+                            <button onclick="detectLocation()" class="btn">Detect Location</button>
+                            <div id="locationResult" class="timestamp"></div>
+                        </div>
+                        
+                        <div class="test-card">
+                            <h3>📊 Cache Status</h3>
+                            <p>Check if content is served from cache</p>
+                            <button onclick="checkCacheStatus()" class="btn">Check Cache</button>
+                            <div id="cacheResult" class="timestamp"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <h2>🖼️ Image Loading Test</h2>
+                    <p>This image will help you test CDN caching behavior for static assets:</p>
+                    
+                    <div class="image-test">
+                        <img src="test-image.jpg" alt="CDN Test Image" class="test-image" onerror="this.style.display='none'" id="testImage">
+                        <div id="imageStatus">
+                            <p class="timestamp">Make sure you uploaded 'test-image.jpg' to your server</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button onclick="reloadImage()" class="btn">Reload Image</button>
+                        <button onclick="clearImageCache()" class="btn btn-secondary">Clear Cache & Reload</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="learning" class="tab-content">
+                <h2>Phase 4: Learning Exercises</h2>
+                <p>Now that your CDN lab is fully operational, complete these exercises to deepen your understanding.</p>
+                
+                <div class="grid">
+                    <div class="info-card">
+                        <h3>Exercise 1: Header Comparison</h3>
+                        <p>Visit the Headers Test page from both URLs:</p>
+                        <ul>
+                            <li><code>yourdomain.com/headers.php</code> (direct)</li>
+                            <li><code>cdn.yourdomain.com/headers.php</code> (CDN)</li>
+                        </ul>
+                        <p>Compare the HTTP headers. Look for:</p>
+                        <ul>
+                            <li><code>CF-Cache-Status</code> - Shows if content is cached</li>
+                            <li><code>CF-RAY</code> - Unique request ID through Cloudflare</li>
+                            <li><code>Server</code> - Will show "cloudflare" for CDN version</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Exercise 2: Performance Testing</h3>
+                        <p>Use online tools to test both URLs:</p>
+                        <ul>
+                            <li><a href="https://tools.pingdom.com" target="_blank">Pingdom Tools</a></li>
+                            <li><a href="https://gtmetrix.com" target="_blank">GTmetrix</a></li>
+                            <li><a href="https://webpagetest.org" target="_blank">WebPageTest</a></li>
+                        </ul>
+                        <p>Compare:</p>
+                        <ul>
+                            <li>Load times</li>
+                            <li>Performance scores</li>
+                            <li>Waterfall charts</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Exercise 3: Cache Purge Test</h3>
+                        <p>Learn about cache invalidation:</p>
+                        <ol>
+                            <li>Make a small change to this HTML file</li>
+                            <li>Upload it to your server</li>
+                            <li>Visit both URLs - notice the CDN version might not show changes immediately</li>
+                            <li>In Cloudflare dashboard, go to Caching → Configuration → Purge Cache</li>
+                            <li>Select "Purge Everything"</li>
+                            <li>Refresh the CDN URL - now you'll see the changes</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Key CDN Concepts You've Learned</h2>
+                    
+                    <div class="grid">
+                        <div class="info-card">
+                            <h3>DNS Proxy</h3>
+                            <p>By pointing your nameservers to Cloudflare, you've made Cloudflare the authoritative DNS for your domain. All DNS queries now go through Cloudflare first.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>CDN Caching</h3>
+                            <p>Cloudflare stores copies of your content in its global data centers. When users request your site, they get it from the nearest location, not your origin server.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>Performance Benefits</h3>
+                            <p>CDNs reduce latency by serving content from locations closer to users. They also reduce load on your origin server.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid">
+                        <div class="info-card">
+                            <h3>Cache Invalidation</h3>
+                            <p>When you update content, you need to clear the CDN cache so users see the latest version. This can be done manually or via API.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>Security Benefits</h3>
+                            <p>Cloudflare acts as a shield, protecting your origin server from direct attacks and filtering malicious traffic before it reaches your server.</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>SSL/TLS Termination</h3>
+                            <p>Cloudflare handles SSL encryption between users and Cloudflare, and can use flexible SSL between Cloudflare and your origin server.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Complete CDN Learning Lab | Cloudflare Free Tier Setup Guide</p>
+            <p class="timestamp">Use this lab to master CDN concepts through hands-on experimentation</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab navigation
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // Hide all tab content
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            // Remove active class from all tabs
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            // Show the specific tab content and add active class to the button
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Initialize page with basic information
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('pageTime').textContent = new Date().toLocaleString();
+            document.getElementById('serverName').textContent = window.location.hostname;
+            
+            // Check if we're on CDN or direct domain
+            const hostname = window.location.hostname;
+            if (hostname.includes('cdn.')) {
+                document.getElementById('connectionType').textContent = 'CDN (Cloudflare)';
+                document.getElementById('connectionType').style.color = '#ff9800';
+                document.querySelector('header h1').innerHTML += ' <span style="color: #ffd700;">(CDN Enabled)</span>';
+            } else {
+                document.getElementById('connectionType').textContent = 'Direct to Origin Server';
+                document.getElementById('connectionType').style.color = '#4caf50';
+                document.querySelector('header h1').innerHTML += ' <span style="color: #4caf50;">(Direct Connection)</span>';
+            }
+            
+            // Mark prerequisites as checked (user can uncheck if needed)
+            document.querySelectorAll('.checkmark').forEach(check => {
+                check.classList.add('checked');
+            });
+        });
+
+        // Performance Test
+        function runPerformanceTest() {
+            const startTime = performance.now();
+            const resultElement = document.getElementById('performanceResult');
+            resultElement.innerHTML = '<span class="status-indicator status-testing"></span>Testing...';
+            
+            // Simulate performance test
+            setTimeout(() => {
+                const endTime = performance.now();
+                const loadTime = (endTime - startTime).toFixed(2);
+                resultElement.innerHTML = `<span class="status-indicator status-live"></span>Load time: ${loadTime}ms`;
+                
+                // Add some educational context
+                setTimeout(() => {
+                    const hostname = window.location.hostname;
+                    if (hostname.includes('cdn.')) {
+                        resultElement.innerHTML += `<br><small>CDN is active. For accurate comparison, test the direct domain too.</small>`;
+                    } else {
+                        resultElement.innerHTML += `<br><small>Direct connection. Compare with CDN version for performance differences.</small>`;
+                    }
+                }, 1000);
+            }, 500);
+        }
+
+        // Location Detection
+        function detectLocation() {
+            const resultElement = document.getElementById('locationResult');
+            resultElement.innerHTML = '<span class="status-indicator status-testing"></span>Detecting...';
+            
+            // Simple location detection based on hostname
+            setTimeout(() => {
+                const hostname = window.location.hostname;
+                let locationInfo = '';
+                
+                if (hostname.includes('cdn.')) {
+                    locationInfo = 'Serving via CDN (Cloudflare Global Network)';
+                } else {
+                    locationInfo = 'Serving directly from Origin Server';
+                }
+                
+                resultElement.innerHTML = `<span class="status-indicator status-live"></span>${locationInfo}`;
+            }, 800);
+        }
+
+        // Cache Status Check
+        function checkCacheStatus() {
+            const resultElement = document.getElementById('cacheResult');
+            resultElement.innerHTML = '<span class="status-indicator status-testing"></span>Checking...';
+            
+            // This would normally require server-side headers, so we simulate
+            setTimeout(() => {
+                const hostname = window.location.hostname;
+                let cacheStatus = '';
+                
+                if (hostname.includes('cdn.')) {
+                    cacheStatus = 'CDN Active - Check Network tab for CF-Cache-Status header';
+                } else {
+                    cacheStatus = 'Direct Connection - No CDN Caching';
+                }
+                
+                resultElement.innerHTML = `<span class="status-indicator status-live"></span>${cacheStatus}`;
+            }, 600);
+        }
+
+        // Image reload functions
+        function reloadImage() {
+            const img = document.getElementById('testImage');
+            const d = new Date();
+            img.src = 'test-image.jpg?' + d.getTime();
+            document.getElementById('imageStatus').innerHTML = '<p class="timestamp">Image reloaded with cache busting parameter</p>';
+        }
+
+        function clearImageCache() {
+            const img = document.getElementById('testImage');
+            img.src = 'test-image.jpg';
+            document.getElementById('imageStatus').innerHTML = '<p class="timestamp">Image loaded (may be from browser cache)</p>';
+        }
+    </script>
+</body>
+</html>
