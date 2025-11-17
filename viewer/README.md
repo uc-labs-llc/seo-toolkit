@@ -1379,13 +1379,13 @@ Update documentation accordingly
 This project is licensed under the MIT License - see the LICENSE.md file for details.
 
 🆘 Support
-📚 Documentation
+📚 AI
 
-🐛 Bug Reports
+🐛 Call A Friend
 
-💬 Community Forum
+💬 pay Someone
 
-📧 Email Support
+📧 READ ALL INSTRUCTIONS and Guides
 
 🌟 Success Stories
 Case Study: Major E-commerce Platform
