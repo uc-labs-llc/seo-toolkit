@@ -1,0 +1,224 @@
+# On Linux/Mac
+sudo -u postgres psql
+
+# On Windows (using Command Prompt or PowerShell)
+psql -U postgres
+
+# If you need to specify password
+psql -U postgres -h localhost -W
+
+-- Create a new user with password (replace 'your_password' with actual password)
+CREATE USER analytics_user WITH PASSWORD 'your_secure_password_123';
+
+-- Or create user with login privilege and password
+CREATE ROLE analytics_user WITH LOGIN PASSWORD 'your_secure_password_123';
+
+-- Grant necessary privileges
+ALTER USER analytics_user CREATEDB;
+
+-- Check if user was created successfully
+\du
+
+-- Create the database
+CREATE DATABASE analytics_db;
+
+-- Assign ownership to the new user
+ALTER DATABASE analytics_db OWNER TO analytics_user;
+
+-- List all databases to verify
+\l
+
+-- Connect to the new database as the new user
+\c analytics_db analytics_user
+
+-- Or exit current session and reconnect:
+\q
+
+psql -U analytics_user -d analytics_db -W
+
+
+# Connect to your new database
+psql -U analytics_user -d analytics_db -W
+
+Then run the table creation commands:
+
+
+
+-- Main events table to store all analytics data
+
+CREATE TABLE analytics_events (
+    id SERIAL PRIMARY KEY,
+    log_timestamp TIMESTAMP NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    app_id VARCHAR(100) NOT NULL DEFAULT 'default-app-id',
+    event_timestamp TIMESTAMP NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    user_agent TEXT,
+    screen_width INTEGER,
+    screen_height INTEGER,
+    page_title VARCHAR(500),
+    session_id VARCHAR(100),
+    session_start TIMESTAMP,
+    referrer VARCHAR(255),
+    page_load_time INTEGER,
+    language VARCHAR(10),
+    timezone VARCHAR(50),
+    load_time INTEGER,
+    dom_ready_time INTEGER,
+    first_paint INTEGER,
+    first_contentful_paint INTEGER,
+    session_pages INTEGER,
+    previous_page VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes for better query performance
+CREATE INDEX idx_analytics_events_timestamp ON analytics_events(event_timestamp);
+CREATE INDEX idx_analytics_events_action ON analytics_events(action);
+CREATE INDEX idx_analytics_events_session ON analytics_events(session_id);
+CREATE INDEX idx_analytics_events_location ON analytics_events(location);
+
+
+-- User sessions summary table
+CREATE TABLE user_sessions (
+    session_id VARCHAR(100) PRIMARY KEY,
+    app_id VARCHAR(100) NOT NULL,
+    session_start TIMESTAMP NOT NULL,
+    session_end TIMESTAMP,
+    user_agent TEXT,
+    screen_width INTEGER,
+    screen_height INTEGER,
+    language VARCHAR(10),
+    timezone VARCHAR(50),
+    total_page_views INTEGER DEFAULT 0,
+    total_session_duration INTERVAL,
+    device_type VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_user_sessions_start ON user_sessions(session_start);
+CREATE INDEX idx_user_sessions_device ON user_sessions(device_type);
+
+-- Page performance metrics table
+CREATE TABLE page_performance (
+    id SERIAL PRIMARY KEY,
+    session_id VARCHAR(100),
+    location VARCHAR(255) NOT NULL,
+    page_title VARCHAR(500),
+    event_timestamp TIMESTAMP NOT NULL,
+    page_load_time INTEGER,
+    load_time INTEGER,
+    dom_ready_time INTEGER,
+    first_paint INTEGER,
+    first_contentful_paint INTEGER,
+    user_agent TEXT,
+    screen_width INTEGER,
+    screen_height INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_page_performance_session ON page_performance(session_id);
+CREATE INDEX idx_page_performance_timestamp ON page_performance(event_timestamp);
+
+-- View for session analytics
+CREATE VIEW session_analytics AS
+SELECT 
+    session_id,
+    app_id,
+    session_start,
+    session_end,
+    user_agent,
+    screen_width,
+    screen_height,
+    language,
+    timezone,
+    total_page_views,
+    total_session_duration,
+    device_type,
+    CASE 
+        WHEN user_agent LIKE '%Mobile%' THEN 'Mobile'
+        ELSE 'Desktop'
+    END as device_category
+FROM user_sessions;
+
+-- View for page load performance
+CREATE VIEW page_performance_summary AS
+SELECT 
+    location,
+    page_title,
+    COUNT(*) as total_loads,
+    AVG(page_load_time) as avg_page_load_time,
+    AVG(load_time) as avg_load_time,
+    AVG(dom_ready_time) as avg_dom_ready_time,
+    AVG(first_paint) as avg_first_paint,
+    AVG(first_contentful_paint) as avg_first_contentful_paint,
+    MIN(event_timestamp) as first_seen,
+    MAX(event_timestamp) as last_seen
+FROM page_performance
+WHERE page_load_time > 0
+GROUP BY location, page_title;
+
+-- View for user engagement
+CREATE VIEW user_engagement AS
+SELECT 
+    DATE(session_start) as session_date,
+    COUNT(*) as total_sessions,
+    AVG(total_page_views) as avg_pages_per_session,
+    AVG(EXTRACT(EPOCH FROM total_session_duration)) as avg_session_duration_seconds,
+    COUNT(CASE WHEN total_page_views = 1 THEN 1 END) as bounce_sessions,
+    ROUND(COUNT(CASE WHEN total_page_views = 1 THEN 1 END) * 100.0 / COUNT(*), 2) as bounce_rate
+FROM user_sessions
+WHERE session_end IS NOT NULL
+GROUP BY DATE(session_start);
+
+-- View for device breakdown
+CREATE VIEW device_breakdown AS
+SELECT 
+    CASE 
+        WHEN user_agent LIKE '%Mobile%' THEN 'Mobile'
+        ELSE 'Desktop'
+    END as device_type,
+    COUNT(*) as session_count,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM user_sessions), 2) as percentage,
+    AVG(total_page_views) as avg_pages_per_session,
+    AVG(EXTRACT(EPOCH FROM total_session_duration)) as avg_session_duration_seconds
+FROM user_sessions
+GROUP BY 
+    CASE 
+        WHEN user_agent LIKE '%Mobile%' THEN 'Mobile'
+        ELSE 'Desktop'
+    END;
+
+-- Function to extract device type from user agent
+CREATE OR REPLACE FUNCTION get_device_type(user_agent TEXT)
+RETURNS VARCHAR(20) AS $$
+BEGIN
+    IF user_agent LIKE '%Mobile%' THEN
+        RETURN 'Mobile';
+    ELSE
+        RETURN 'Desktop';
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to calculate session duration
+CREATE OR REPLACE FUNCTION calculate_session_duration(session_id VARCHAR)
+RETURNS INTERVAL AS $$
+DECLARE
+    session_start TIMESTAMP;
+    session_end TIMESTAMP;
+BEGIN
+    SELECT MIN(event_timestamp) INTO session_start
+    FROM analytics_events 
+    WHERE analytics_events.session_id = calculate_session_duration.session_id;
+    
+    SELECT MAX(event_timestamp) INTO session_end
+    FROM analytics_events 
+    WHERE analytics_events.session_id = calculate_session_duration.session_id;
+    
+    RETURN session_end - session_start;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
