@@ -1,4 +1,4 @@
-
+![SEO](seo-generator.png)
 The Complete SEO Toolkit
 
 📈 Take Control of Your SEO and Get an A+ Rating
