@@ -222,6 +222,7 @@ User-defined default (e.g., weekly).
 
 The priority of this URL relative to others on your site (0.0 to 1.0). 
 
+![SEO](seo-analytics.png)
 
 
 🚀 Quick Start Self Hosted Web Analytics Platform
